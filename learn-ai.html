@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="theme-color" content="#ffffff">
+    <title>CyberScan - دليل فهم الذكاء الاصطناعي</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        * { -webkit-tap-highlight-color: transparent; -webkit-touch-callout: none; }
+        body {
+            font-family: 'Cairo', sans-serif;
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: 80px;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #0891b2, #7c3aed, #db2777);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .analogy-card {
+            background: linear-gradient(135deg, #f0fdf4, #f0fdfa);
+            border: 1px solid #bbf7d0;
+        }
+        .code-block {
+            background: #1e293b;
+            border: 1px solid #334155;
+            font-family: 'Courier New', monospace;
+            color: #e2e8f0;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+        .progress-track {
+            position: fixed; top: 0; left: 0; height: 3px;
+            background: linear-gradient(90deg, #06b6d4, #8b5cf6, #ec4899);
+            z-index: 100; transition: width 0.3s;
+        }
+        .scroll-reveal { opacity: 0; transform: translateY(20px); transition: all 0.6s ease; }
+        .scroll-reveal.visible { opacity: 1; transform: translateY(0); }
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(255,255,255,0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid #e5e7eb;
+            z-index: 50;
+            padding-bottom: env(safe-area-inset-bottom);
+        }
+        .bottom-nav a {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 6px 0;
+            font-size: 10px;
+            font-weight: 600;
+            color: #9ca3af;
+            transition: all 0.2s;
+            text-decoration: none;
+            min-width: 64px;
+        }
+        .bottom-nav a.active { color: #8b5cf6; }
+        .bottom-nav svg { width: 22px; height: 22px; margin-bottom: 2px; color: #9ca3af; transition: color 0.2s; }
+        .bottom-nav a.active svg { color: #8b5cf6; }
+        .app-header {
+            position: sticky;
+            top: 0;
+            z-index: 40;
+            background: rgba(255,255,255,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid #e5e7eb;
+            padding-top: env(safe-area-inset-top);
+        }
+        .touch-item { transition: all 0.15s ease; }
+        .touch-item:active { transform: scale(0.97); opacity: 0.8; }
+        .phase-card {
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.04);
+        }
+        .phase-card:active { transform: scale(0.98); }
+    </style>
+</head>
+<body class="bg-gray-50">
+
+    <div class="progress-track" id="progressBar"></div>
+
+    <!-- App Header -->
+    <header class="app-header">
+        <div class="px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white text-xs">C</div>
+                <span class="text-base font-bold text-gray-900">دليل التعلم</span>
+            </div>
+            <a href="index.html" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center">
+                <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            </a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Card -->
+        <section class="px-4 pt-4 pb-2 scroll-reveal">
+            <div class="bg-gradient-to-br from-purple-500 via-indigo-500 to-cyan-500 rounded-2xl p-5 text-white shadow-lg shadow-purple-200">
+                <div class="text-[10px] font-bold bg-white/20 inline-block px-2 py-0.5 rounded-full mb-3 backdrop-blur">مبتدئ تماماً؟ ابدأ من هنا</div>
+                <h1 class="text-xl font-black mb-2 leading-tight">كيف يعمل الذكاء الاصطناعي</h1>
+                <p class="text-white/80 text-xs leading-relaxed">شرح مبسط من الصفر — لا تحتاج خبرة سابقة</p>
+                <div class="flex gap-2 mt-4">
+                    <a href="#phase0" class="bg-white text-purple-600 rounded-lg px-4 py-2 text-xs font-bold flex-1 text-center touch-item">ابدأ التعلم</a>
+                    <a href="#roadmap" class="bg-white/20 text-white rounded-lg px-4 py-2 text-xs font-bold flex-1 text-center backdrop-blur touch-item">خريطة المراحل</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Roadmap -->
+        <section id="roadmap" class="px-4 py-3 scroll-reveal">
+            <h2 class="text-sm font-bold text-gray-900 mb-3">خريطة المراحل</h2>
+            <div class="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4" style="scrollbar-width:none;">
+                <a href="#phase0" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-cyan-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-cyan-100 flex items-center justify-center text-cyan-600 font-bold text-sm mx-auto mb-1">0</div>
+                    <div class="text-[10px] font-bold text-gray-900">ما هو AI</div>
+                </a>
+                <a href="#phase1" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-green-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-green-100 flex items-center justify-center text-green-600 font-bold text-sm mx-auto mb-1">1</div>
+                    <div class="text-[10px] font-bold text-gray-900">البيانات</div>
+                </a>
+                <a href="#phase2" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-purple-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-purple-100 flex items-center justify-center text-purple-600 font-bold text-sm mx-auto mb-1">2</div>
+                    <div class="text-[10px] font-bold text-gray-900">الميزات</div>
+                </a>
+                <a href="#phase3" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-pink-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-pink-100 flex items-center justify-center text-pink-600 font-bold text-sm mx-auto mb-1">3</div>
+                    <div class="text-[10px] font-bold text-gray-900">التدريب</div>
+                </a>
+                <a href="#phase4" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-amber-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-amber-100 flex items-center justify-center text-amber-600 font-bold text-sm mx-auto mb-1">4</div>
+                    <div class="text-[10px] font-bold text-gray-900">التقييم</div>
+                </a>
+                <a href="#phase5" class="touch-item flex-shrink-0 bg-white rounded-xl px-3 py-2.5 border border-red-200 text-center min-w-[80px]">
+                    <div class="w-8 h-8 rounded-lg bg-red-100 flex items-center justify-center text-red-600 font-bold text-sm mx-auto mb-1">5</div>
+                    <div class="text-[10px] font-bold text-gray-900">النماذج</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Phase 0: What is AI -->
+        <section id="phase0" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-cyan-500 to-cyan-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-cyan-200 flex-shrink-0">0</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-cyan-600 font-bold">المرحلة صفر</div>
+                    <h3 class="text-sm font-bold text-gray-900">ما هو الذكاء الاصطناعي؟</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">تخيل إنك تتعلم تمييز بين التفاح والبرتقال. أولاً ترى הרבה من كل نوع، ثم تلاحظ الفروقات (اللون، الحجم، الشكل). بعدها تقدر تميّز بينهما بسهولة — هذا بالضبط كيف يتعلم الذكاء الاصطناعي!</p>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">التعريف البسيط:</h4>
+                <p class="text-gray-600 text-xs leading-relaxed mb-3">الذكاء الاصطناعي هو تعليم الكمبيوتر أن يتعلم من البيانات بدل ما نكتب له قواعد يدوياً. الكمبيوتر يرى أنماطاً في البيانات ويستنتج قواعد من تلقاء نفسه.</p>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">المصطلحات الأساسية:</h4>
+                <div class="space-y-1.5">
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-cyan-700 font-bold text-[10px]">ML (Machine Learning)</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— تعلم الآلة: جزء من AI</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-cyan-700 font-bold text-[10px]">Model</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— النموذج: النتيجة النهائية للتدريب</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-cyan-700 font-bold text-[10px]">Training</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— التدريب: عملية التعليم</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-cyan-700 font-bold text-[10px]">Features</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— الميزات: الخصائص المستخدمة في التصنيف</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 1: Data -->
+        <section id="phase1" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-green-200 flex-shrink-0">1</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-green-600 font-bold">المرحلة الأولى</div>
+                    <h3 class="text-sm font-bold text-gray-900">البيانات — الوقود</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">البيانات مثل الوصفة: بدون مكونات جيدة ما طلع طعام لذيذ. نفس الشيء — بدون بيانات جيدة النموذج ما يتعلم صح.</p>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">أنواع البيانات:</h4>
+                <div class="space-y-1.5 mb-3">
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <div class="w-5 h-5 rounded bg-blue-100 flex items-center justify-center flex-shrink-0"><span class="text-blue-600 text-[8px]">📊</span></div>
+                        <div><span class="text-[10px] font-bold text-gray-900">بيانات ب чисرية</span><span class="text-[10px] text-gray-500 mr-1">— أرقام (السعر، العمر، عدد)</span></div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <div class="w-5 h-5 rounded bg-green-100 flex items-center justify-center flex-shrink-0"><span class="text-green-600 text-[8px]">📝</span></div>
+                        <div><span class="text-[10px] font-bold text-gray-900">بيانات نصية</span><span class="text-[10px] text-gray-500 mr-1">— نصوص (الوصف، التعليقات)</span></div>
+                    </div>
+                    <div class="flex items-center gap-2 bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <div class="w-5 h-5 rounded bg-purple-100 flex items-center justify-center flex-shrink-0"><span class="text-purple-600 text-[8px]">🏷️</span></div>
+                        <div><span class="text-[10px] font-bold text-gray-900">بيانات تصنيفية</span><span class="text-[10px] text-gray-500 mr-1">— فئات (عادياً، هجوم)</span></div>
+                    </div>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">في مشروعنا:</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-cyan-50 rounded-lg p-2.5 border border-cyan-100 text-center">
+                        <div class="text-lg font-black text-cyan-600">156K</div>
+                        <div class="text-[9px] text-gray-500">سجل CVE (المودل الأول)</div>
+                    </div>
+                    <div class="bg-purple-50 rounded-lg p-2.5 border border-purple-100 text-center">
+                        <div class="text-lg font-black text-purple-600">2.8M</div>
+                        <div class="text-[9px] text-gray-500">سجل شبكة (المودل الثاني)</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 2: Features -->
+        <section id="phase2" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-purple-500 to-purple-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-purple-200 flex-shrink-0">2</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-purple-600 font-bold">المرحلة الثانية</div>
+                    <h3 class="text-sm font-bold text-gray-900">الميزات (Features)</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">لما تبيّن لطفل التفاح والبرتقال، تشرح له الفروقات: "التفاح أحمر والبرتقال برتقالي، التفاح أصغر". هذي الفروقات هي "الميزات" — الخصائص اللي نستخدمها للتمييز.</p>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">TF-IDF — تحويل النص لأرقام:</h4>
+                <p class="text-gray-600 text-xs leading-relaxed mb-3">الطريقة اللي نحوّل بيها النصوص لأرقام. كل كلمة تحصل على "وزن" حسب أهميتها في النص.</p>
+                <div class="code-block rounded-lg p-3 mb-3 overflow-x-auto">
+                    <div class="text-[10px]">
+                        <span class="text-green-400"># مثال بسيط</span><br>
+                        <span class="text-yellow-300">النص:</span> "XSS في WordPress"<br>
+                        <span class="text-yellow-300">XSS</span> = 0.8 (مهم جداً)<br>
+                        <span class="text-yellow-300">في</span> = 0.1 (عادي)<br>
+                        <span class="text-yellow-300">WordPress</span> = 0.7 (مهم)
+                    </div>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">في مشروعنا نستخدم:</h4>
+                <div class="space-y-1.5">
+                    <div class="flex items-center gap-2 text-xs text-gray-600"><span class="w-4 h-4 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0"><span class="text-purple-600 text-[8px]">✓</span></span>TF-IDF — 8,000 ميزة من وصف CVE</div>
+                    <div class="flex items-center gap-2 text-xs text-gray-600"><span class="w-4 h-4 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0"><span class="text-purple-600 text-[8px]">✓</span></span>CVSS Score — درجة الخطورة</div>
+                    <div class="flex items-center gap-2 text-xs text-gray-600"><span class="w-4 h-4 rounded-full bg-purple-100 flex items-center justify-center flex-shrink-0"><span class="text-purple-600 text-[8px]">✓</span></span>Attack Vector — متجه الهجوم</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 3: Training -->
+        <section id="phase3" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-pink-200 flex-shrink-0">3</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-pink-600 font-bold">المرحلة الثالثة</div>
+                    <h3 class="text-sm font-bold text-gray-900">التدريب (Training)</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">التدريب مثل ما تذاكر لامتحان: تمرر على أسئلة كثيرة (بيانات التدريب)، ثم تحل امتحان تجريبي (بيانات الاختبار) عشان تعرف إذا فهمت ولا لا.</p>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">(Random Forest) شرح الخوارزمية:</h4>
+                <p class="text-gray-600 text-xs leading-relaxed mb-3">مثل لجنة من 200 خبير. كل واحد ي shuffle البيانات وياخذ رأيه. في النهاية نصوّت على أكثر رأي تكراراً. هذا يعطي نتيجة أدق من خبير واحد.</p>
+                <div class="bg-pink-50 rounded-lg p-3 border border-pink-100">
+                    <div class="text-[10px] font-bold text-pink-700 mb-2">الخطوات:</div>
+                    <div class="space-y-1.5">
+                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-pink-200 text-pink-700 text-[9px] font-bold flex items-center justify-center flex-shrink-0">1</div><span class="text-xs text-gray-600">تقسيم البيانات 80% تدريب / 20% اختبار</span></div>
+                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-pink-200 text-pink-700 text-[9px] font-bold flex items-center justify-center flex-shrink-0">2</div><span class="text-xs text-gray-600">تدريب 200 شجرة قرار</span></div>
+                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-pink-200 text-pink-700 text-[9px] font-bold flex items-center justify-center flex-shrink-0">3</div><span class="text-xs text-gray-600">التصويت الجماعي للنتيجة النهائية</span></div>
+                        <div class="flex items-center gap-2"><div class="w-5 h-5 rounded-full bg-pink-200 text-pink-700 text-[9px] font-bold flex items-center justify-center flex-shrink-0">4</div><span class="text-xs text-gray-600">قياس الدقة على بيانات الاختبار</span></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 4: Evaluation -->
+        <section id="phase4" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-amber-500 to-amber-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-amber-200 flex-shrink-0">4</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-amber-600 font-bold">المرحلة الرابعة</div>
+                    <h3 class="text-sm font-bold text-gray-900">التقييم (Evaluation)</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">مثل ما تحل امتحان وتشوف درجتك: كم سؤال جبت صح؟ كم غلط؟ هذا بالضبط تقييم النموذج.</p>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">المصطلحات الأساسية:</h4>
+                <div class="space-y-1.5 mb-3">
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-amber-700 font-bold text-[10px]">Accuracy (الدقة)</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— كم نسبة الإجابات الصحيحة</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-amber-700 font-bold text-[10px]">Precision (الدقة الإيجابية)</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— من اللي قلت هجوم، كم فعلاً هجوم</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-amber-700 font-bold text-[10px]">Recall (الاستدعاء)</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— من الهجمات الحقيقية، كم اكتشفتها</span>
+                    </div>
+                    <div class="bg-gray-50 rounded-lg p-2.5 border border-gray-100">
+                        <span class="text-amber-700 font-bold text-[10px]">F1-Score</span>
+                        <span class="text-gray-600 text-[10px] mr-1">— متوسط Precision وRecall</span>
+                    </div>
+                </div>
+                <h4 class="font-bold text-gray-900 text-xs mb-2">الفرق بين التدريب والاختبار:</h4>
+                <div class="grid grid-cols-2 gap-2">
+                    <div class="bg-green-50 rounded-lg p-2.5 border border-green-100 text-center">
+                        <div class="text-[10px] font-bold text-green-700">بيانات التدريب</div>
+                        <div class="text-[9px] text-gray-500">80% — يشوفها النموذج</div>
+                    </div>
+                    <div class="bg-amber-50 rounded-lg p-2.5 border border-amber-100 text-center">
+                        <div class="text-[10px] font-bold text-amber-700">بيانات الاختبار</div>
+                        <div class="text-[9px] text-gray-500">20% — ما يشوفها أبداً</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Phase 5: Models -->
+        <section id="phase5" class="px-4 py-3 scroll-reveal">
+            <div class="flex items-center gap-3 mb-3">
+                <div class="w-11 h-11 rounded-2xl bg-gradient-to-br from-red-500 to-red-600 flex items-center justify-center text-lg font-black text-white shadow-md shadow-red-200 flex-shrink-0">5</div>
+                <div class="min-w-0">
+                    <div class="text-[10px] text-red-600 font-bold">المرحلة الخامسة</div>
+                    <h3 class="text-sm font-bold text-gray-900">النماذج في المشروع</h3>
+                </div>
+            </div>
+            <div class="phase-card rounded-xl p-4">
+                <div class="analogy-card rounded-lg p-3 mb-3">
+                    <div class="text-[10px] font-bold text-green-700 mb-1">💡 من الحياة اليومية</div>
+                    <p class="text-gray-600 text-xs leading-relaxed">مثل ما عندك طبيب عام وطبيب متخصص: الطبيب العام يشوف المشاكل الأساسية، والمتخصص ي深入. نفس الشيء — عندنا نموذجين كل واحد متخصص في مجال.</p>
+                </div>
+
+                <!-- Model 1 -->
+                <div class="bg-cyan-50 rounded-xl p-3 border border-cyan-200 mb-3">
+                    <h4 class="font-bold text-cyan-700 text-xs mb-2">المودل الأول: مُصنِّف ثغرات CVE</h4>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الخوارزمية</div>
+                            <div class="text-[10px] font-bold text-gray-900">RandomForest</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الأشجار</div>
+                            <div class="text-[10px] font-bold text-gray-900">200 شجرة</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الميزات</div>
+                            <div class="text-[10px] font-bold text-gray-900">8,003 ميزة</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الدقة</div>
+                            <div class="text-[10px] font-bold text-green-600">97.36%</div>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-600">يأخذ وصف الثغرة (CVE) ويصنف نوع الهجوم: XSS, SQL Injection, RCE... إلخ</p>
+                </div>
+
+                <!-- Model 2 -->
+                <div class="bg-purple-50 rounded-xl p-3 border border-purple-200">
+                    <h4 class="font-bold text-purple-700 text-xs mb-2">المودل الثاني: مُصنِّف حركة المرور</h4>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الخوارزمية</div>
+                            <div class="text-[10px] font-bold text-gray-900">RandomForest</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الأشجار</div>
+                            <div class="text-[10px] font-bold text-gray-900">200 شجرة</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الميزات</div>
+                            <div class="text-[10px] font-bold text-gray-900">18 ميزة</div>
+                        </div>
+                        <div class="bg-white rounded-lg p-2 border border-gray-100">
+                            <div class="text-[9px] text-gray-500">الدقة</div>
+                            <div class="text-[10px] font-bold text-green-600">99.40%</div>
+                        </div>
+                    </div>
+                    <p class="text-[10px] text-gray-600">يأخذ بيانات الاتصال الحية ويصنفها: عادية أو DDoS أو PortScan... إلخ</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Summary -->
+        <section class="px-4 py-4 scroll-reveal">
+            <h2 class="text-sm font-bold text-gray-900 mb-3">ملخص المقارنة</h2>
+            <div class="bg-white rounded-xl border border-gray-200 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-[10px]">
+                        <thead>
+                            <tr class="bg-gray-50 border-b border-gray-200">
+                                <th class="px-3 py-2.5 text-right font-bold text-gray-900">البند</th>
+                                <th class="px-3 py-2.5 text-right font-bold text-cyan-700">المودل 1</th>
+                                <th class="px-3 py-2.5 text-right font-bold text-purple-700">المودل 2</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100">
+                            <tr><td class="px-3 py-2 text-gray-600">المهمة</td><td class="px-3 py-2 text-gray-900">تصنيف ثغرات</td><td class="px-3 py-2 text-gray-900">تصنيف حركة مرور</td></tr>
+                            <tr><td class="px-3 py-2 text-gray-600">البيانات</td><td class="px-3 py-2 text-gray-900">NVD CVE</td><td class="px-3 py-2 text-gray-900">CICIDS2017</td></tr>
+                            <tr><td class="px-3 py-2 text-gray-600">الحجم</td><td class="px-3 py-2 text-gray-900">156K سجل</td><td class="px-3 py-2 text-gray-900">2.8M سجل</td></tr>
+                            <tr><td class="px-3 py-2 text-gray-600">الميزات</td><td class="px-3 py-2 text-gray-900">8,003</td><td class="px-3 py-2 text-gray-900">18</td></tr>
+                            <tr><td class="px-3 py-2 text-gray-600">الخوارزمية</td><td class="px-3 py-2 text-gray-900">RandomForest</td><td class="px-3 py-2 text-gray-900">RandomForest</td></tr>
+                            <tr><td class="px-3 py-2 text-gray-600">الدقة</td><td class="px-3 py-2 text-green-600 font-bold">97.36%</td><td class="px-3 py-2 text-green-600 font-bold">99.40%</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <div class="h-6"></div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <div class="flex justify-around items-center max-w-md mx-auto">
+            <a href="index.html">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                الرئيسية
+            </a>
+            <a href="about.html">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                عن المشروع
+            </a>
+            <a href="learn-ai.html" class="active">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path></svg>
+                التعلم
+            </a>
+            <a href="phases.html">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                المراحل
+            </a>
+        </div>
+    </nav>
+
+    <script>
+        // Progress bar
+        window.addEventListener('scroll', () => {
+            const scrollTop = document.documentElement.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const progress = (scrollTop / scrollHeight) * 100;
+            document.getElementById('progressBar').style.width = progress + '%';
+        });
+        // Scroll reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('visible');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.scroll-reveal').forEach(el => observer.observe(el));
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+        });
+    </script>
+</body>
+</html>
