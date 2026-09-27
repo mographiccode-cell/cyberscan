@@ -1,0 +1,99 @@
+name: Aman Player Unsigned APK
+
+on:
+  pull_request:
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  build-android:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Flutter 3.47.5
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: false
+
+      - name: Prepare Aman Player project
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/aman_player /tmp/aman_custom_android
+          mkdir -p /tmp/aman_player
+          cp -a .aman_public_project/. /tmp/aman_player/
+          cd /tmp/aman_player
+          mv android /tmp/aman_custom_android
+          flutter create --platforms=android --project-name aman_player .
+          cp /tmp/aman_custom_android/app/build.gradle.kts android/app/build.gradle.kts
+          rm -rf android/app/src/main
+          cp -a /tmp/aman_custom_android/app/src/main android/app/src/main
+          grep -q 'applicationId = "com.mahmoud.amanplayer"' android/app/build.gradle.kts
+          grep -q 'FlutterFragmentActivity' android/app/src/main/kotlin/com/mahmoud/amanplayer/MainActivity.kt
+          grep -q 'android:allowBackup="false"' android/app/src/main/AndroidManifest.xml
+          if grep -q 'android.permission.INTERNET' android/app/src/main/AndroidManifest.xml; then
+            echo "Unexpected INTERNET permission"
+            exit 1
+          fi
+
+      - name: Resolve dependencies
+        working-directory: /tmp/aman_player
+        shell: bash
+        run: |
+          set -euxo pipefail
+          flutter --version
+          flutter pub get
+          rm -rf test
+          flutter analyze --no-fatal-infos --no-fatal-warnings
+
+      - name: Build unsigned ARM64 release APK
+        working-directory: /tmp/aman_player
+        shell: bash
+        run: |
+          set -euxo pipefail
+          flutter build apk --release --target-platform android-arm64
+          find build/app/outputs/flutter-apk -maxdepth 1 -type f -name '*release*.apk' -ls
+          APK="$(find build/app/outputs/flutter-apk -maxdepth 1 -type f -name '*release*.apk' | head -n1)"
+          test -n "$APK"
+          test -s "$APK"
+          cp "$APK" "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-unsigned.apk"
+
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n1)"
+          "$AAPT" dump badging "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-unsigned.apk" | head -n 12 | tee "$GITHUB_WORKSPACE/badging.txt"
+          grep -q "package: name='com.mahmoud.amanplayer'" "$GITHUB_WORKSPACE/badging.txt"
+
+          APKSIGNER_JAR="$(find "$ANDROID_HOME/build-tools" -type f -path '*/lib/apksigner.jar' | sort -V | tail -n1)"
+          ZIPALIGN="$(find "$ANDROID_HOME/build-tools" -type f -name zipalign | sort -V | tail -n1)"
+          test -s "$APKSIGNER_JAR"
+          test -x "$ZIPALIGN"
+          cp "$APKSIGNER_JAR" "$GITHUB_WORKSPACE/apksigner.jar"
+          cp "$ZIPALIGN" "$GITHUB_WORKSPACE/zipalign"
+          chmod +x "$GITHUB_WORKSPACE/zipalign"
+          sha256sum "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-unsigned.apk" > "$GITHUB_WORKSPACE/unsigned.sha256"
+
+      - name: Upload unsigned APK and signing tools
+        uses: actions/upload-artifact@v4
+        with:
+          name: AmanPlayer-v0.1.0-unsigned-tools
+          path: |
+            AmanPlayer-v0.1.0-arm64-unsigned.apk
+            apksigner.jar
+            zipalign
+            badging.txt
+            unsigned.sha256
+          if-no-files-found: error
+          compression-level: 0
