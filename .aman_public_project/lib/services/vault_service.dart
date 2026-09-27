@@ -88,19 +88,15 @@ class VaultService {
   }
 
   Future<VaultItem?> importVideo() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-      allowMultiple: false,
-      withData: false,
-    );
-    final sourcePath = result?.files.single.path;
+    final selected = await FilePicker.pickFile(type: FileType.video);
+    final sourcePath = selected?.path;
     if (sourcePath == null) return null;
 
     final source = File(sourcePath);
     if (!await source.exists()) return null;
     final dir = await _directory();
     final now = DateTime.now();
-    final originalName = result!.files.single.name;
+    final originalName = selected!.name;
     final safeName = originalName.replaceAll(RegExp(r'[^A-Za-z0-9._\-\u0600-\u06FF ]'), '_');
     final target = File(
       '${dir.path}${Platform.pathSeparator}${now.microsecondsSinceEpoch}_$safeName',
