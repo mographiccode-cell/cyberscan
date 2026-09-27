@@ -61,12 +61,8 @@ class MediaLibraryService {
   }
 
   Future<File?> pickSingleVideo() async {
-    final result = await FilePicker.platform.pickFiles(
-      type: FileType.video,
-      allowMultiple: false,
-      withData: false,
-    );
-    final path = result?.files.single.path;
+    final selected = await FilePicker.pickFile(type: FileType.video);
+    final path = selected?.path;
     if (path == null || path.isEmpty) return null;
     return File(path);
   }
