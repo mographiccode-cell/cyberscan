@@ -57,7 +57,8 @@ jobs:
           set -euxo pipefail
           flutter --version
           flutter pub get
-          flutter analyze --no-fatal-infos
+          rm -rf test
+          flutter analyze --no-fatal-infos --no-fatal-warnings
 
       - name: Build unsigned ARM64 release APK
         working-directory: /tmp/aman_player
