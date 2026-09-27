@@ -55,15 +55,14 @@ class _PlayerPageState extends State<PlayerPage> {
   }
 
   Future<void> _pickSubtitle() async {
-    final result = await FilePicker.platform.pickFiles(
-      allowMultiple: false,
+    final selected = await FilePicker.pickFile(
       type: FileType.custom,
       allowedExtensions: const ['srt', 'ass', 'ssa', 'vtt', 'sub', 'smi'],
     );
-    final path = result?.files.single.path;
+    final path = selected?.path;
     if (path == null) return;
     await _player.setSubtitleTrack(
-      SubtitleTrack.uri(Uri.file(path).toString(), title: result!.files.single.name),
+      SubtitleTrack.uri(Uri.file(path).toString(), title: selected!.name),
     );
   }
 
