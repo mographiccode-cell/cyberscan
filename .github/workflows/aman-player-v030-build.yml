@@ -52,8 +52,7 @@ jobs:
           grep -q 'applicationId = "com.mahmoud.amanplayer"' /tmp/aman/android/app/build.gradle.kts
           sed -i '/signingConfig = signingConfigs.getByName("debug")/d' /tmp/aman/android/app/build.gradle.kts
           grep -q '^version: 0.3.0+3' /tmp/aman/pubspec.yaml
-          grep -R -q '774813824' /tmp/aman/lib
-          ! grep -R -q '74813824' /tmp/aman/lib
+          grep -R -F -q 'تصميم وبرمجة : م.محمود دغَبس  مبايل:774813824' /tmp/aman/lib
 
       - name: Resolve packages
         working-directory: /tmp/aman
