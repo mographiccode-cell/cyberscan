@@ -1,0 +1,22 @@
+name: Export Aman Player v0.2 Source
+
+on:
+  push:
+    branches:
+      - aman-player-build-v020
+
+permissions:
+  contents: read
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload source archive
+        uses: actions/upload-artifact@v4
+        with:
+          name: AmanPlayer-v0.2.0-source
+          path: aman_player_v020.tar.xz
+          if-no-files-found: error
+          compression-level: 0
