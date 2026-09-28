@@ -43,6 +43,15 @@ jobs:
           cp -a /tmp/aman_src/lib /tmp/aman/lib
           cp /tmp/aman_src/pubspec.yaml /tmp/aman/pubspec.yaml
           cp /tmp/aman_src/android/app/src/main/AndroidManifest.xml /tmp/aman/android/app/src/main/AndroidManifest.xml
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('/tmp/aman/lib/pages/player_page.dart')
+          s = p.read_text()
+          s = s.replace("final result = await FilePicker.platform.pickFiles(\n      allowMultiple: false,", "final result = await FilePicker.pickFile(")
+          s = s.replace("final path = result?.files.single.path;", "final path = result?.path;")
+          s = s.replace("final name = result!.files.single.name;", "final name = result!.name;")
+          p.write_text(s)
+          PY
           mkdir -p /tmp/aman/assets/branding
           if [ -d /tmp/aman_src/assets ]; then cp -a /tmp/aman_src/assets/. /tmp/aman/assets/; fi
           for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
