@@ -1,0 +1,90 @@
+name: Aman Player Public APK Build
+
+on:
+  push:
+    branches:
+      - aman-player-build-v010
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Flutter 3.47.5
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.47.5'
+          channel: stable
+          cache: true
+
+      - name: Create Android wrapper
+        shell: bash
+        run: |
+          set -euxo pipefail
+          rm -rf /tmp/aman
+          flutter create --platforms=android --org com.mahmoud --project-name amanplayer /tmp/aman
+          cp aman_player_app/pubspec.yaml /tmp/aman/pubspec.yaml
+          cp aman_player_app/lib/main.dart /tmp/aman/lib/main.dart
+          cp aman_player_app/AndroidManifest.xml /tmp/aman/android/app/src/main/AndroidManifest.xml
+          for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
+            mkdir -p "/tmp/aman/android/app/src/main/res/mipmap-$d"
+            cp aman_player_app/ic_launcher.png "/tmp/aman/android/app/src/main/res/mipmap-$d/ic_launcher.png"
+          done
+          grep -q 'applicationId = "com.mahmoud.amanplayer"' /tmp/aman/android/app/build.gradle.kts
+          sed -i '/signingConfig = signingConfigs.getByName("debug")/d' /tmp/aman/android/app/build.gradle.kts
+          grep -q 'android:mimeType="video/\*"' /tmp/aman/android/app/src/main/AndroidManifest.xml
+
+      - name: Resolve packages
+        working-directory: /tmp/aman
+        run: |
+          set -euxo pipefail
+          flutter --version
+          flutter pub get
+
+      - name: Build unsigned ARM64 release
+        working-directory: /tmp/aman
+        shell: bash
+        run: |
+          set -euxo pipefail
+          flutter build apk --release --target-platform android-arm64 || ./android/gradlew -p android assembleRelease
+          APK="$(find build android/app/build -type f -name '*release*.apk' 2>/dev/null | head -n 1)"
+          test -n "$APK"
+          test -s "$APK"
+          ZIPALIGN="$(find "$ANDROID_HOME/build-tools" -type f -name zipalign | sort -V | tail -n 1)"
+          APKSIGNER="$(find "$ANDROID_HOME/build-tools" -type f -name apksigner | sort -V | tail -n 1)"
+          AAPT="$(find "$ANDROID_HOME/build-tools" -type f -name aapt | sort -V | tail -n 1)"
+          test -x "$ZIPALIGN"
+          test -x "$APKSIGNER"
+          test -x "$AAPT"
+          "$ZIPALIGN" -f -p 4 "$APK" "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-aligned-unsigned.apk"
+          "$AAPT" dump badging "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-aligned-unsigned.apk" | head -n 10 | tee "$GITHUB_WORKSPACE/badging.txt"
+          grep -q "package: name='com.mahmoud.amanplayer'" "$GITHUB_WORKSPACE/badging.txt"
+          APKSIGNER_JAR="$(find "$ANDROID_HOME/build-tools" -type f -path '*/lib/apksigner.jar' | sort -V | tail -n 1)"
+          test -f "$APKSIGNER_JAR"
+          cp "$APKSIGNER_JAR" "$GITHUB_WORKSPACE/apksigner.jar"
+          sha256sum "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-aligned-unsigned.apk" > "$GITHUB_WORKSPACE/unsigned.sha256"
+          ls -lh "$GITHUB_WORKSPACE/AmanPlayer-v0.1.0-arm64-aligned-unsigned.apk" "$GITHUB_WORKSPACE/apksigner.jar"
+
+      - name: Upload unsigned build
+        uses: actions/upload-artifact@v4
+        with:
+          name: AmanPlayer-v0.1.0-unsigned
+          path: |
+            AmanPlayer-v0.1.0-arm64-aligned-unsigned.apk
+            apksigner.jar
+            badging.txt
+            unsigned.sha256
+          if-no-files-found: error
+          compression-level: 0
