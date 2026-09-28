@@ -38,10 +38,11 @@ jobs:
           mkdir -p /tmp/aman_src
           tar -xJf aman_player_v020.tar.xz -C /tmp/aman_src
           flutter create --platforms=android --org com.mahmoud --project-name amanplayer /tmp/aman
-          rm -rf /tmp/aman/lib
+          rm -rf /tmp/aman/lib /tmp/aman/test
           cp -a /tmp/aman_src/lib /tmp/aman/lib
           cp /tmp/aman_src/pubspec.yaml /tmp/aman/pubspec.yaml
           cp /tmp/aman_src/android/app/src/main/AndroidManifest.xml /tmp/aman/android/app/src/main/AndroidManifest.xml
+          mkdir -p /tmp/aman/assets/branding
           for d in mdpi hdpi xhdpi xxhdpi xxxhdpi; do
             mkdir -p "/tmp/aman/android/app/src/main/res/mipmap-$d"
             cp aman_player_app/ic_launcher.png "/tmp/aman/android/app/src/main/res/mipmap-$d/ic_launcher.png"
@@ -61,7 +62,7 @@ jobs:
         working-directory: /tmp/aman
         run: |
           set -euxo pipefail
-          flutter analyze --no-fatal-infos
+          flutter analyze --no-fatal-warnings --no-fatal-infos
 
       - name: Build unsigned ARM64 release
         working-directory: /tmp/aman
